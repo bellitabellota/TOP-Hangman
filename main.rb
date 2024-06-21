@@ -19,8 +19,11 @@ class Game
   end
 
   def play_game
+    p secret_word
     display_matching_guesses
     player_guess = player.get_player_guess(secret_word)
+
+    return puts "You guessed the word. You won!" if player_guess == secret_word
 
     # self.lines = make_stroke(wrong_guesses)
     # display_stick_figure(lines)
