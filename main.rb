@@ -1,11 +1,13 @@
 class Game
-  attr_reader :words, :secret_word
-  attr_accessor :lines
+  attr_reader :words, :secret_word, :player
+  attr_accessor :lines, :matching_guesses
 
   def initialize
     @words = File.readlines("google-10000-english-no-swears.txt")
     @secret_word = select_secret_word(words)
     @lines = Array.new(11, " ")
+    @player = Player.new
+    @matching_guesses = Array.new(secret_word.length, " _")
   end
 
   def select_secret_word(words)
@@ -17,9 +19,17 @@ class Game
   end
 
   def play_game
-    wrong_guesses = 1
-    self.lines = make_stroke(wrong_guesses)
-    display_stick_figure(lines)
+    display_matching_guesses
+    player_guess = player.get_player_guess(secret_word)
+
+    # self.lines = make_stroke(wrong_guesses)
+    # display_stick_figure(lines)
+  end
+
+  def display_matching_guesses
+    print "Secret word:"
+    matching_guesses.each { |letter| print letter }
+    puts
   end
 
   def make_stroke(wrong_guesses)
@@ -64,5 +74,17 @@ class Game
   end
 end
 
+class Player
+  def get_player_guess(secret_word)
+    puts "Please enter your guess:"
+    loop do
+      player_guess = gets.chomp.downcase
+
+      break player_guess if ("a".."z").any?(player_guess) || player_guess.length == secret_word.length
+
+      puts "Invalid choice. Input must be single letter or whole word."
+    end
+  end
+end
 game = Game.new
 game.play_game
