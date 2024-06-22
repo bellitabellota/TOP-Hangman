@@ -1,15 +1,16 @@
 class Game
   attr_reader :words, :secret_word, :player
-  attr_accessor :lines, :matching_guesses, :number_wrong_guesses, :wrong_guesses
+  attr_accessor :lines, :matching_guesses, :number_wrong_guesses, :wrong_guesses, :game_finished
 
   def initialize
     @words = File.readlines("google-10000-english-no-swears.txt")
     @secret_word = select_secret_word(words)
     @lines = Array.new(11, " ")
     @player = Player.new
-    @matching_guesses = Array.new(secret_word.length, " _")
+    @matching_guesses = Array.new(secret_word.length, "_")
     @number_wrong_guesses = 0
     @wrong_guesses = []
+    @game_finished = false
   end
 
   def select_secret_word(words)
@@ -21,22 +22,37 @@ class Game
   end
 
   def play_game
-    # p secret_word
+    p secret_word
     display_matching_guesses
+    until number_wrong_guesses == 11
+      play_one_round
+      return if game_finished == true
+    end
+
+    puts "You lost!"
+  end
+
+  def play_one_round
     player_guess = player.get_player_guess(secret_word)
 
-    ## check if word matches or if letter is contained
-
-    return puts "You guessed the word. You won!" if player_guess == secret_word
-
     evaluate_guess(player_guess)
+
+    check_for_win(player_guess)
+    return if game_finished == true
 
     display_matching_guesses
 
     self.lines = make_stroke(number_wrong_guesses)
     display_stick_figure(lines) if number_wrong_guesses != 0
     display_wrong_guesses
-    # puts "Number wrong guesses: #{number_wrong_guesses}"
+  end
+
+  def check_for_win(player_guess)
+    return unless player_guess == secret_word || matching_guesses.join == secret_word
+
+    self.game_finished = true
+    puts "You guessed the word. You won!"
+
   end
 
   def evaluate_guess(player_guess)
@@ -51,20 +67,21 @@ class Game
 
   def update_matching_guesses(player_guess)
     secret_word.chars.each_with_index do |secret_letter, secret_letter_index|
-      matching_guesses[secret_letter_index] = " #{player_guess}" if secret_letter == player_guess
+      matching_guesses[secret_letter_index] = player_guess.to_s if secret_letter == player_guess
     end
   end
 
   def display_wrong_guesses
     print "Wrong guesses: "
-    wrong_guesses.each { |guess| puts guess }
+    wrong_guesses.each { |guess| print " #{guess}" }
     puts "0" if wrong_guesses == []
+    puts
   end
 
   def display_matching_guesses
     puts
     print "Secret word:"
-    matching_guesses.each { |letter| print letter }
+    matching_guesses.each { |letter| print " #{letter}" }
     puts
   end
 
