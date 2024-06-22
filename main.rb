@@ -1,6 +1,6 @@
 class Game
   attr_reader :words, :secret_word, :player
-  attr_accessor :lines, :matching_guesses
+  attr_accessor :lines, :matching_guesses, :number_wrong_guesses, :wrong_guesses
 
   def initialize
     @words = File.readlines("google-10000-english-no-swears.txt")
@@ -8,6 +8,8 @@ class Game
     @lines = Array.new(11, " ")
     @player = Player.new
     @matching_guesses = Array.new(secret_word.length, " _")
+    @number_wrong_guesses = 0
+    @wrong_guesses = []
   end
 
   def select_secret_word(words)
@@ -19,24 +21,55 @@ class Game
   end
 
   def play_game
-    p secret_word
+    # p secret_word
     display_matching_guesses
     player_guess = player.get_player_guess(secret_word)
 
+    ## check if word matches or if letter is contained
+
     return puts "You guessed the word. You won!" if player_guess == secret_word
 
-    # self.lines = make_stroke(wrong_guesses)
-    # display_stick_figure(lines)
+    evaluate_guess(player_guess)
+
+    display_matching_guesses
+
+    self.lines = make_stroke(number_wrong_guesses)
+    display_stick_figure(lines) if number_wrong_guesses != 0
+    display_wrong_guesses
+    # puts "Number wrong guesses: #{number_wrong_guesses}"
+  end
+
+  def evaluate_guess(player_guess)
+    if (player_guess != secret_word && player_guess.length > 1) ||
+       (player_guess.length == 1 && !secret_word.include?(player_guess))
+      self.number_wrong_guesses += 1
+      wrong_guesses.push(player_guess)
+    elsif player_guess.length == 1 && secret_word.include?(player_guess)
+      update_matching_guesses(player_guess)
+    end
+  end
+
+  def update_matching_guesses(player_guess)
+    secret_word.chars.each_with_index do |secret_letter, secret_letter_index|
+      matching_guesses[secret_letter_index] = " #{player_guess}" if secret_letter == player_guess
+    end
+  end
+
+  def display_wrong_guesses
+    print "Wrong guesses: "
+    wrong_guesses.each { |guess| puts guess }
+    puts "0" if wrong_guesses == []
   end
 
   def display_matching_guesses
+    puts
     print "Secret word:"
     matching_guesses.each { |letter| print letter }
     puts
   end
 
-  def make_stroke(wrong_guesses)
-    case wrong_guesses
+  def make_stroke(number_wrong_guesses)
+    case number_wrong_guesses
     when 1
       lines[0] = "___"
     when 2
