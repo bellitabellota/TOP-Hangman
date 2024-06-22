@@ -22,14 +22,13 @@ class Game
   end
 
   def play_game
-    p secret_word
     display_matching_guesses
     until number_wrong_guesses == 11
       play_one_round
       return if game_finished == true
     end
 
-    puts "You lost!"
+    puts "You lost! The secret word was: #{secret_word}."
   end
 
   def play_one_round
@@ -51,8 +50,7 @@ class Game
     return unless player_guess == secret_word || matching_guesses.join == secret_word
 
     self.game_finished = true
-    puts "You guessed the word. You won!"
-
+    puts "You won! The secret word was: #{secret_word}."
   end
 
   def evaluate_guess(player_guess)
