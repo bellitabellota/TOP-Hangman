@@ -2,6 +2,18 @@ class Game
   attr_reader :words, :secret_word, :player
   attr_accessor :lines, :matching_guesses, :number_wrong_guesses, :wrong_guesses, :game_finished
 
+  def play_game
+    display_matching_guesses
+    until number_wrong_guesses == 11
+      play_one_round
+      return if game_finished == true
+    end
+
+    puts "You lost! The secret word was: #{secret_word}."
+  end
+
+  private
+
   def initialize
     @words = File.readlines("google-10000-english-no-swears.txt")
     @secret_word = select_secret_word(words)
@@ -19,16 +31,6 @@ class Game
     end
 
     medium_length_words.compact.sample
-  end
-
-  def play_game
-    display_matching_guesses
-    until number_wrong_guesses == 11
-      play_one_round
-      return if game_finished == true
-    end
-
-    puts "You lost! The secret word was: #{secret_word}."
   end
 
   def play_one_round
