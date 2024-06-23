@@ -12,7 +12,22 @@ def continue_previous_game?
   end
 end
 
+def load_previous_game
+  unless File.exist? "last_saved_game_file"
+    return puts "No previously saved game was found. Try your luck with a new game."
+  end
+
+  de_serialized_game = YAML.unsafe_load File.read("last_saved_game_file")
+
+  ### make some reading if I correctly de-serialized safe vs unsafe load. Are there other options??
+  de_serialized_game.play_game(de_serialized_game)
+end
+
 player_decision = continue_previous_game?
 
-game = Game.new
-game.play_game(game)
+if player_decision == "y"
+  load_previous_game
+else
+  game = Game.new
+  game.play_game(game)
+end
