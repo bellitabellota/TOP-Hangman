@@ -5,6 +5,9 @@ class Game
   attr_accessor :lines, :matching_guesses, :number_wrong_guesses, :wrong_guesses, :game_finished
 
   def play_game(game)
+    player_decision = player.continue_previous_game?
+
+
     display_matching_guesses
     until number_wrong_guesses == 11
       wants_to_save = player.save_game?
