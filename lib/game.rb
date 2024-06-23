@@ -1,11 +1,17 @@
+require "yaml"
+
 class Game
   attr_reader :words, :secret_word, :player
   attr_accessor :lines, :matching_guesses, :number_wrong_guesses, :wrong_guesses, :game_finished
 
-  def play_game
-    p player.save_game?
+  def play_game(game)
     display_matching_guesses
     until number_wrong_guesses == 11
+      wants_to_save = player.save_game?
+      if wants_to_save == "y"
+        save_game(game)
+      end
+
       play_one_round
       return if game_finished == true
     end
@@ -24,6 +30,13 @@ class Game
     @number_wrong_guesses = 0
     @wrong_guesses = []
     @game_finished = false
+  end
+
+  def save_game(game)
+    serialized_object = YAML.dump(game)
+    last_saved_game_file = File.new "last_saved_game_file", "w"
+    last_saved_game_file.puts serialized_object
+    last_saved_game_file.close
   end
 
   def select_secret_word(words)

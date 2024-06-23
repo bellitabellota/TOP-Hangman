@@ -11,7 +11,7 @@ class Player
   end
 
   def save_game?
-    puts "Do you want to save the game ? (Y/N)"
+    puts "Do you want to save the game before making your guess? (Y/N)"
     loop do
       player_answer = gets.chomp.downcase
 
