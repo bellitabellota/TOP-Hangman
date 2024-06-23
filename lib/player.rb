@@ -9,4 +9,15 @@ class Player
       puts "Invalid choice. Input must be single letter or whole word."
     end
   end
+
+  def save_game?
+    puts "Do you want to save the game ? (Y/N)"
+    loop do
+      player_answer = gets.chomp.downcase
+
+      break player_answer if player_answer == "y" || player_answer == "n"
+
+      puts "Invalid choice. Input must be Y or N."
+    end
+  end
 end

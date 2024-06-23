@@ -3,6 +3,7 @@ class Game
   attr_accessor :lines, :matching_guesses, :number_wrong_guesses, :wrong_guesses, :game_finished
 
   def play_game
+    p player.save_game?
     display_matching_guesses
     until number_wrong_guesses == 11
       play_one_round
