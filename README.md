@@ -1,6 +1,6 @@
-#Hangman
+# Hangman
 
-##Assignment instructions from The Odin Project (TOP)
+## Assignment instructions from The Odin Project (TOP)
 
 You will be building a command line Hangman game where one player plays against the computer, but a bit more advanced. If you’re unfamiliar with how Hangman works, see [Wikipedia](http://en.wikipedia.org/wiki/Hangman_(game)).
 
