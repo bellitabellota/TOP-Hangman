@@ -1,3 +1,7 @@
+Preview
+
+<img src="https://github.com/bellitabellota/TOP-Hangman/blob/main/Hangman.gif" />
+
 # Hangman
 
 ## Assignment instructions from The Odin Project (TOP)
